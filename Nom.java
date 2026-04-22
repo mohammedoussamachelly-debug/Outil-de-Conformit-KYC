@@ -1,17 +1,18 @@
 public abstract class Nom {
-    public int id;
- private string nom_original;  
- private string nom_pretraité; 
- private string source ;
-    public Nom(int id, string nom_original, string nom_pretraité, string source) {
-        this.id = id;
-        this.nom_original = nom_original;
-        this.nom_pretraité = nom_pretraité;
-        this.source = source;
+     private int id;
+     private string nom_original;  
+     private string nom_pretraité; 
+     private string source;
+     private str[] partie;
+     public Nom(int id, string nom_original, string nom_pretraité, string source) {
+            this.id = id;
+            this.nom_original = nom_original;
+            this.nom_pretraité = nom_pretraité;
+            this.source = source;
 
 
     }
- public int getId() {
+    public int getId() {
         return id;
     }
 
@@ -26,3 +27,7 @@ public abstract class Nom {
     public string getSource() {
         return source;
     }
+    
+    public str[] getPartie(){
+        return partie;
+    }        
