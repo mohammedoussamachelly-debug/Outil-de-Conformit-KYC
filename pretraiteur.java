@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class pretraiteur {
+public abstract class Pretraiteur {
 
- public List<String> pretraiter(List<String> listeEntree){
+ public String[] pretraiter(String[] a,String[] b){
     return null;
  }
 
