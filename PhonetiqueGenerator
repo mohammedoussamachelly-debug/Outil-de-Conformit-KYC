@@ -1,7 +1,0 @@
-import java.util.ArrayList;
-import java.util.List;
-public abstract class PhonetiqueGenerator extends GenerateurdeCandidat{
-    public Couple[] generercandidat(Nom[]){
-        return;
-    }
-}

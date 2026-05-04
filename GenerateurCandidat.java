@@ -1,7 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-public abstract class GenerateurdeCandidat{
-    public Couple[] generercandidat(Nom[]){
-        return;
-    }
+public abstract class GenerateurdeCandidat {
+    public abstract Couple[] generercandidat(Nom[] noms);
 }
