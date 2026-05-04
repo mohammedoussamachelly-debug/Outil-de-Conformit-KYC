@@ -12,8 +12,8 @@ public abstract class Nom {
     }
      public Nom(int id, string nom_original , string source) {
             this.id = id;
-            this.nom_original = nom_original;
-            this.nom_pretraité = 
+            this.nom_original = nom_original
+            this.nom_pretraité=nom_original.split(" ");
             this.source = source;
     }
 
