@@ -9,9 +9,15 @@ public abstract class Nom {
             this.nom_original = nom_original;
             this.nom_pretraité = nom_pretraité;
             this.source = source;
-
-
     }
+     public Nom(int id, string nom_original , string source) {
+            this.id = id;
+            this.nom_original = nom_original;
+            this.nom_pretraité = 
+            this.source = source;
+    }
+
+     
     public int getId() {
         return id;
     }
