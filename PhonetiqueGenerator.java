@@ -17,7 +17,7 @@ public class PhonetiqueGenerator extends GenerateurdeCandidat {
             .replaceAll("[DT]", "3")
             .replaceAll("[L]", "4")
             .replaceAll("[MN]", "5")
-            .replaceAll("[R]", "6")
+            .replaceAll("[R]", "6");
         StringBuilder sb = new StringBuilder();
         char prev = '0';
         for (char c : digits.toCharArray()) {
@@ -30,20 +30,20 @@ public class PhonetiqueGenerator extends GenerateurdeCandidat {
         code = (code + "000").substring(0, 4);
         return code;
     }
-    public Couple[] generercandidat(Nom[] noms) {
-        return null;
-    }
-}
+
 public Couple[] generercandidat(Nom[] noms) {
         List<Couple> couples = new ArrayList<>();
         for (int i = 0; i < noms.length - 1; i++) {
             for (int j = i + 1; j < noms.length; j++) {
-                if Soundex(nom[i])==Soundex(nom[j]){
+                if (soundex(noms[i].getNomPretraite()).equals(soundex(noms[j].getNomPretraite()))){
                     couples.add(new Couple(noms[i], noms[j]));
             }
             
             }
-            
-        couples.toArray(new Couple[0]);
+
         }
+        return couples.toArray(new Couple[0]);
+    }
+}
+ 
 
