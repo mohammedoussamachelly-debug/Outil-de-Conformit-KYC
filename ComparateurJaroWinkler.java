@@ -1,6 +1,6 @@
 public class ComparateurJaroWinkler implements ComparateurDeChaine {
 
-    @Override
+    
     public double comparer(String nom1, String nom2) {
         if (nom1.equals(nom2)) return 1.0;
         if (nom1.isEmpty() || nom2.isEmpty()) return 0.0;
@@ -52,10 +52,9 @@ public class ComparateurJaroWinkler implements ComparateurDeChaine {
             (double) (lettresCommunes - transpositions / 2) / lettresCommunes
         ) / 3.0;
 
-        return (int)(jaro * 100); // retourne le score x100 pour garder int
-    }
+        return (int)(jaro * 100); 
 
-    @Override
+
     public boolean estSimilaire(double score, double seuil) {
         return score >= seuil;
     }
