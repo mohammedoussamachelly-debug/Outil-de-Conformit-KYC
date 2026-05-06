@@ -1,59 +1,56 @@
 public class ComparateurJaroWinkler implements ComparateurDeChaine {
 
-    
     public double comparer(String nom1, String nom2) {
-        if (nom1.equals(nom2)) return 1.0;
-        if (nom1.isEmpty() || nom2.isEmpty()) return 0.0;
-        int fenetre = Math.max(nom1.length(), nom2.length()) / 2 - 1;
-        if (fenetre < 0) fenetre = 0;
-        boolean[] dejaUtilise1 = new boolean[nom1.length()];
-        boolean[] dejaUtilise2 = new boolean[nom2.length()];
+        return calculerJaroWinkler(nom1, nom2);
+    }
 
-        int lettresCommunes = 0;
-        for (int i = 0; i < nom1.length(); i++) {
-            int debut = Math.max(0, i - fenetre);
-            int fin   = Math.min(i + fenetre + 1, nom2.length());
+    public double calculerJaroWinkler(String s1, String s2) {
+        if (s1.equals(s2)) return 1.0;
 
-            for (int j = debut; j < fin; j++) {
-                if (dejaUtilise2[j]) continue;
-                if (nom1.charAt(i) != nom2.charAt(j)) continue;
+        int len1 = s1.length();
+        int len2 = s2.length();
+        int matchDistance = Math.max(len1, len2) / 2 - 1;
 
-                dejaUtilise1[i] = true;
-                dejaUtilise2[j] = true;
-                lettresCommunes++;
+        boolean[] s1Matches = new boolean[len1];
+        boolean[] s2Matches = new boolean[len2];
+
+        int matches = 0;
+        int transpositions = 0;
+
+        for (int i = 0; i < len1; i++) {
+            int start = Math.max(0, i - matchDistance);
+            int end = Math.min(i + matchDistance + 1, len2);
+            for (int j = start; j < end; j++) {
+                if (s2Matches[j] || s1.charAt(i) != s2.charAt(j)) continue;
+                s1Matches[i] = true;
+                s2Matches[j] = true;
+                matches++;
                 break;
             }
         }
-        if (lettresCommunes == 0) return 0.0;
-        int transpositions = 0;
+
+        if (matches == 0) return 0.0;
+
         int k = 0;
-        for (int i = 0; i < nom1.length(); i++) {
-            if (!dejaUtilise1[i]) continue;
-            while (!dejaUtilise2[k]) k++;
-            if (nom1.charAt(i) != nom2.charAt(k)) transpositions++;
+        for (int i = 0; i < len1; i++) {
+            if (!s1Matches[i]) continue;
+            while (!s2Matches[k]) k++;
+            if (s1.charAt(i) != s2.charAt(k)) transpositions++;
             k++;
         }
-        double jaro = calculerJaro(nom1, nom2, lettresCommunes, transpositions);
 
-        int prefixe = 0;
-        for (int i = 0; i < Math.min(4, Math.min(nom1.length(), nom2.length())); i++) {
-            if (nom1.charAt(i) == nom2.charAt(i)) prefixe++;
+        double jaro = (matches / (double) len1
+                     + matches / (double) len2
+                     + (matches - transpositions / 2.0) / matches) / 3.0;
+
+        int prefix = 0;
+        for (int i = 0; i < Math.min(4, Math.min(len1, len2)); i++) {
+            if (s1.charAt(i) == s2.charAt(i)) prefix++;
             else break;
         }
-        return jaro + prefixe * 0.1 * (1 - jaro);
+
+        return 
     }
-
-    public int calculerJaro(String s1, String s2, int lettresCommunes, int transpositions) {
-        if (lettresCommunes == 0) return 0;
-
-        double jaro = (
-            (double) lettresCommunes / s1.length() +
-            (double) lettresCommunes / s2.length() +
-            (double) (lettresCommunes - transpositions / 2) / lettresCommunes
-        ) / 3.0;
-
-        return (int)(jaro * 100); 
-
 
     public boolean estSimilaire(double score, double seuil) {
         return score >= seuil;

@@ -1,3 +1,3 @@
-public abstract class GenerateurdeCandidat {
-    public abstract Couple[] generercandidat(Nom[] noms);
-}
+public interface GenerateurDeCandidat {
+      Couple[] generercandidat(Nom[] noms);
+  }
