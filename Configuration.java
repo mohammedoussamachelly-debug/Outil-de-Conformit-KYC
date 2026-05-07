@@ -4,12 +4,12 @@ public class Configuration {
     private Index indexeur;
     private ComparateurDeChaine comparateur;
     private GenerateurDeCandidat generateur;
-    private Sectionneur sectionneur; 
+    private Selectionneur sectionneur;
     private double seuil;
     private int maxResultats; 
 
 
-    public Configuration(Pretraitement pretraitement, Index indexeur, ComparateurDeChaine comparateur, GenerateurDeCandidat generateur, Sectionneur sectionneur, double seuil, int maxResultats) {
+    public Configuration(Pretraitement pretraitement, Index indexeur, ComparateurDeChaine comparateur, GenerateurDeCandidat generateur, Selectionneur sectionneur, double seuil, int maxResultats) {
         this.pretraitement = pretraitement;
         this.indexeur = indexeur;
         this.comparateur = comparateur;
@@ -31,7 +31,7 @@ public class Configuration {
         return comparateur; }
     public GenerateurDeCandidat getGenerateur() {  
         return generateur; }
-    public Sectionneur getSectionneur() {
+    public Selectionneur getSectionneur() {
         return sectionneur; }
     public double getSeuil(){ 
         return seuil; }
@@ -47,7 +47,7 @@ public class Configuration {
          this.comparateur = c; }
     public void setGenerateur(GenerateurDeCandidat g){
          this.generateur = g; }
-    public void setSectionneur(Sectionneur s){
+    public void setSectionneur(Selectionneur s){
          this.sectionneur = s; }
     public void setSeuil(double s){ 
         this.seuil = s; }
