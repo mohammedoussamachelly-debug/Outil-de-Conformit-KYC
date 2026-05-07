@@ -1,10 +1,16 @@
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class SelectionneurTopN implements Selectionneur {
-	public List<Triplet> selectionner(List<Triplet> triplets, int N) {
+	private final Configuration configuration;
+
+	public SelectionneurTopN(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
+	public List<Triplet> selectionner(List<Triplet> triplets) {
+		int N = configuration == null ? 0 : configuration.getMaxResultats();
 		if (triplets == null || triplets.isEmpty() || N <= 0) {
 			return new ArrayList<>();
 		}
