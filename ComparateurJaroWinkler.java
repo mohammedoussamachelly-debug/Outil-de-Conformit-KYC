@@ -5,10 +5,10 @@ public class ComparateurJaroWinkler implements ComparateurDeChaine {
     }
 
     public double calculerJaroWinkler(String s1, String s2) {
-        if (s1.equals(s2)) return 1.0;
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();
-
+        if (s1.equals(s2)) return 1.0;
+        
         int len1 = s1.length();
         int len2 = s2.length();
         int matchDistance = Math.max(len1, len2) / 2 - 1;
