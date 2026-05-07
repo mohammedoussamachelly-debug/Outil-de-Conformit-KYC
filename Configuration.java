@@ -17,7 +17,7 @@ public class Configuration {
         this.generateur = generateur;
         this.sectionneur = sectionneur;
         this.seuil = seuil;
-        this.N = maxResultats;
+        
         this.maxResultats = maxResultats;
     
     }
@@ -38,8 +38,7 @@ public class Configuration {
         return sectionneur; }
     public double getSeuil(){ 
         return seuil; }
-    public int getN(){
-        return N; }
+    
     public int getMaxResultats(){ 
         return maxResultats; }
 
@@ -62,7 +61,7 @@ public class Configuration {
     }
     public void setMaxResultats(int m){ 
         this.maxResultats = m;
-        this.N = m;
+        
     }
 
 
