@@ -1,3 +1,4 @@
+
 package kyc.comparateur;
 
 import kyc.model.Nom;
@@ -14,15 +15,29 @@ public class ComparateurDeNomParChamp implements ComparateurDeNom {
         List<String> champsA = a.getNomPretraite();
         List<String> champsB = b.getNomPretraite();
         if (champsA.isEmpty() || champsB.isEmpty()) return 0.0;
-        double total = 0.0;
-        for (String champA : champsA) {
+
+        double scoreAtoB = 0.0;
+        for (int i = 0; i < champsA.size(); i++) {
             double best = 0.0;
-            for (String champB : champsB) {
-                double score = comparateurDeChaine.comparer(champA, champB);
-                if (score > best) best = score;
+            for (int j = 0; j < champsB.size(); j++) {
+                double s = comparateurDeChaine.comparer(champsA.get(i), champsB.get(j));
+                if (s > best) best = s;
             }
-            total += best;
+            scoreAtoB += best;
         }
-        return total / champsA.size();
+        scoreAtoB /= champsA.size();
+
+        double scoreBtoA = 0.0;
+        for (int i = 0; i < champsB.size(); i++) {
+            double best = 0.0;
+            for (int j = 0; j < champsA.size(); j++) {
+                double s = comparateurDeChaine.comparer(champsB.get(i), champsA.get(j));
+                if (s > best) best = s;
+            }
+            scoreBtoA += best;
+        }
+        scoreBtoA /= champsB.size();
+
+        return (scoreAtoB + scoreBtoA) / 2.0;
     }
 }

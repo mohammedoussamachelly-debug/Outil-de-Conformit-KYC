@@ -1,5 +1,5 @@
 package kyc.comparateur;
 
 public interface ComparateurDeChaine {
-    double comparer(String a, String b);
+    public abstract double comparer(String a, String b);
 }

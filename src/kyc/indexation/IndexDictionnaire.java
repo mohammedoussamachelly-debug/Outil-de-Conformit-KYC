@@ -28,31 +28,8 @@ public class IndexDictionnaire implements Index {
         return allNames;
     }
 
-    @Override
-    public List<String> rechercherParMotCle(String motCle) {
-        List<String> resultats = new ArrayList<>();
-        for (int i = 0; i < allNames.size(); i++) {
-            String nom = allNames.get(i);
-            if (nom.toLowerCase().contains(motCle.toLowerCase())) {
-                resultats.add(nom);
-            }
-        }
-        return resultats;
-    }
-
-    @Override
-    public List<String> rechercherParPrefixe(String prefixe) {
-        List<String> resultats = new ArrayList<>();
-        for (int i = 0; i < allNames.size(); i++) {
-            String nom = allNames.get(i);
-            if (nom.toLowerCase().startsWith(prefixe.toLowerCase())) {
-                resultats.add(nom);
-            }
-        }
-        return resultats;
-    }
-
     public Map<String, List<String>> getDictionnaire() {
         return dictionnaire;
     }
 }
+

@@ -1,3 +1,4 @@
+
 package kyc.SourcesDeNoms;
 
 import kyc.model.Nom;
@@ -32,11 +33,9 @@ public class LecteurListeCSV {
                 if (ligne.isEmpty()) continue;
                 String[] colonnes = ligne.split(String.valueOf(separateur));
                 if (colonnes.length < 2) continue;
+                int id       = Integer.parseInt(colonnes[0].trim());
                 String nom   = colonnes[1].trim();
                 String source = colonnes.length >= 3 ? colonnes[2].trim() : "CSV";
-                int id;
-                try { id = Integer.parseInt(colonnes[0].trim()); }
-                catch (NumberFormatException e) { id = noms.size() + 1; }
                 noms.add(new Nom(id, nom, source));
             }
         }

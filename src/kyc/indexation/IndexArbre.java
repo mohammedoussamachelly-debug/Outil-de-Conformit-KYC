@@ -49,32 +49,5 @@ public class IndexArbre implements Index {
         collecterMotsNoeud(racine, resultats);
         return resultats;
     }
-
-    @Override
-    public List<String> rechercherParMotCle(String motCle) {
-        List<String> tous = getNoms();
-        List<String> resultats = new ArrayList<>();
-        for (int i = 0; i < tous.size(); i++) {
-            if (tous.get(i).toLowerCase().contains(motCle.toLowerCase())) {
-                resultats.add(tous.get(i));
-            }
-        }
-        return resultats;
-    }
-
-    @Override
-    public List<String> rechercherParPrefixe(String prefixe) {
-        Noeud courant = racine;
-        String prefixeMinuscule = prefixe.toLowerCase();
-        for (int i = 0; i < prefixeMinuscule.length(); i++) {
-            char c = prefixeMinuscule.charAt(i);
-            if (courant.enfants.get(c) == null) {
-                return new ArrayList<>();
-            }
-            courant = courant.enfants.get(c);
-        }
-        List<String> resultats = new ArrayList<>();
-        collecterMotsNoeud(courant, resultats);
-        return resultats;
-    }
 }
+
