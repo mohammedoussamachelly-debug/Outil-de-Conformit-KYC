@@ -1,14 +1,16 @@
 package kyc.app;
 
-import kyc.Configuration.Configuration;
 import kyc.MoteurDeRecherche.MoteurDeRecherche;
 import kyc.comparateur.*;
 import kyc.GenerateurDeCandidats.*;
+import kyc.affichage.LivreurDeResultat;
+import kyc.indexation.IndexTri;
 import kyc.model.Nom;
 import kyc.pretraitement.*;
 import kyc.selection.*;
 import kyc.SourcesDeNoms.LecteurListeCSV;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -130,7 +132,7 @@ public class Main {
                 break;
             default:
                 try { maxResultats = Integer.parseInt(lire("Nombre de résultats N", "10")); } catch (Exception ignored) {}
-                selectionneur = new SelectionneurTopN();
+                selectionneur = new SelectionneurTopN(maxResultats);
                 break;
         }
 
@@ -147,12 +149,15 @@ public class Main {
         Pretraiteur pretraiteur = choixPre == 2 ? new SupprimerAccents() : new ConvertirMinuscule();
 
         // Lancement
-        Configuration config = new Configuration(pretraiteur, comparateur,
-                new LinearGenerator(), selectionneur, seuil, maxResultats);
-        MoteurDeRecherche moteur = new MoteurDeRecherche(config, selectionneur);
+        GenerateurDeCandidat generateur = typeGen.equals("Phonetique")
+                ? new GenerateurPhonetique()
+                : new LinearGenerator();
+        MoteurDeRecherche moteur = new MoteurDeRecherche(
+                Arrays.asList(pretraiteur), comparateur, generateur,
+                selectionneur, new LivreurDeResultat(), new IndexTri(), seuil);
 
         System.out.println();
-        moteur.chercher(requete, database, typeGen);
+        moteur.chercher(requete, database);
         pause();
     }
 

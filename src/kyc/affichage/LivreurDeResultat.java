@@ -16,7 +16,9 @@ public class LivreurDeResultat {
     private static final String RED    = "[31m";
     private static final String BOLD   = "[1m";
 
-    public List<Nom> livrer(Groupe groupe) {
+    public void fermer() {}
+
+    public List<Nom> livrer(Nom nom, Groupe groupe) {
         List<Couple> tries = new ArrayList<>(groupe.getCouples());
         tries.sort(Comparator.comparingDouble(Couple::getScore).reversed());
 
@@ -40,7 +42,7 @@ public class LivreurDeResultat {
         }
         System.out.println(CYAN + "└──────┴────────────────────────────────────┴──────────┘" + RESET);
         System.out.printf(BOLD + "  %d résultat(s)  —  seuil : %.2f\n" + RESET,
-                resultat.size(), groupe.getSeuil());
+                resultat.size(), groupe.getScore());
         return resultat;
     }
 }
