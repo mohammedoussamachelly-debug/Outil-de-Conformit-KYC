@@ -6,12 +6,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SelectionneurTopN implements Selectionneur {
+public class SelectionneurTopPourcentage implements Selectionneur {
 
-    private int n;
+    private int pourcentage;
 
-    public SelectionneurTopN(int n) {
-        this.n = n;
+    public SelectionneurTopPourcentage(int pourcentage) {
+        this.pourcentage = pourcentage;
     }
 
     @Override
@@ -21,10 +21,12 @@ public class SelectionneurTopN implements Selectionneur {
 
         Collections.sort(candidats, Comparator.comparingDouble(Couple::getScore).reversed());
 
-        for (int i = 0; i < n && i < candidats.size(); i++) {
+        int limite = (int) Math.ceil(candidats.size() * pourcentage / 100.0);
+        for (int i = 0; i < limite && i < candidats.size(); i++) {
             groupe.ajouter(candidats.get(i));
         }
         return groupe;
     }
 }
+
 
