@@ -1,3 +1,5 @@
+package kyc.model;
+
 public class Couple {
     private Nom nom1;
     private Nom nom2;
@@ -9,7 +11,7 @@ public class Couple {
         this.score = score;
     }
 
-    public Nom getNom1()    { return nom1; }
-    public Nom getNom2()    { return nom2; }
-    public double getScore() { return score; }
+    public Nom getNom1()       { return nom1; }
+    public Nom getNom2()       { return nom2; }
+    public double getScore()   { return score; }
 }

@@ -1,0 +1,253 @@
+@startuml
+!pragma layout smetana
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam class {
+    BackgroundColor White
+    BorderColor #333333
+    ArrowColor #333333
+    FontName Arial
+}
+skinparam interface {
+    BackgroundColor #DDEEFF
+    BorderColor #333333
+}
+skinparam abstract {
+    BackgroundColor #FFFACD
+    BorderColor #333333
+}
+
+' ============================================================
+'  MODEL
+' ============================================================
+
+class Nom {
+    -id : int
+    -nom_original : String
+    -nom_pretraite : List<String>
+    -source : String
+    +getId() : int
+    +getNomOriginal() : String
+    +getNomPretraite() : List<String>
+    +getSource() : String
+}
+
+class Couple {
+    -nom1 : Nom
+    -nom2 : Nom
+    -score : double
+    +getNom1() : Nom
+    +getNom2() : Nom
+    +getScore() : double
+}
+
+class Groupe {
+    -seuil : double
+    -couples : List<Couple>
+    +ajouter(couple : Couple) : void
+    +getSeuil() : double
+    +getCouples() : List<Couple>
+}
+
+Couple "2" --> Nom       : composition
+Groupe     --> Couple    : contient
+
+' ============================================================
+'  COMPARATEUR
+' ============================================================
+
+interface ComparateurDeChaine {
+    +comparer(a : String, b : String) : double
+}
+
+interface ComparateurDeNom {
+    +comparer(a : Nom, b : Nom) : double
+}
+
+class ComparateurLevenshtein implements ComparateurDeChaine {
+    +comparer(s1 : String, s2 : String) : double
+}
+
+class ComparateurJaroWinkler implements ComparateurDeChaine {
+    +comparer(s1 : String, s2 : String) : double
+}
+
+class ComparateurEgalitExact implements ComparateurDeChaine {
+    +comparer(a : String, b : String) : double
+}
+
+class ComparateurDeNomParChamp implements ComparateurDeNom {
+    -comparateurDeChaine : ComparateurDeChaine
+    +ComparateurDeNomParChamp(c : ComparateurDeChaine)
+    +comparer(a : Nom, b : Nom) : double
+}
+
+ComparateurDeNomParChamp --> ComparateurDeChaine : agrégation
+
+' ============================================================
+'  PRETRAITEMENT
+' ============================================================
+
+abstract class Pretraiteur {
+    +pretraiter(a : Nom) : List<String>
+}
+
+class ConvertirMinuscule extends Pretraiteur {
+    +pretraiter(a : Nom) : List<String>
+}
+
+class SupprimerAccents extends Pretraiteur {
+    +pretraiter(a : Nom) : List<String>
+}
+
+' ============================================================
+'  GENERATEUR DE CANDIDATS
+' ============================================================
+
+interface GenerateurDeCandidat {
+    +generercandidat(requetes : List<Nom>, candidats : List<Nom>) : List<Couple>
+}
+
+class LinearGenerator implements GenerateurDeCandidat {
+    +generercandidat(requetes : List<Nom>, candidats : List<Nom>) : List<Couple>
+}
+
+class GenerateurLongueurEgale implements GenerateurDeCandidat {
+    -tolerance : int
+    +GenerateurLongueurEgale(tolerance : int)
+    +generercandidat(requetes : List<Nom>, candidats : List<Nom>) : List<Couple>
+}
+
+class GenerateurPrefixe implements GenerateurDeCandidat {
+    -taillePrefixe : int
+    +GenerateurPrefixe(taillePrefixe : int)
+    +generercandidat(requetes : List<Nom>, candidats : List<Nom>) : List<Couple>
+}
+
+' ============================================================
+'  INDEX
+' ============================================================
+
+interface Index {
+    +indexer(noms : List<String>) : void
+    +getNoms() : List<String>
+    +rechercherParMotCle(motCle : String) : List<String>
+    +rechercherParPrefixe(prefixe : String) : List<String>
+}
+
+class IndexDictionnaire implements Index {
+    -dictionnaire : Map<String, List<String>>
+    -allNames : List<String>
+    +indexer(noms : List<String>) : void
+    +getNoms() : List<String>
+    +rechercherParMotCle(motCle : String) : List<String>
+    +rechercherParPrefixe(prefixe : String) : List<String>
+    +getDictionnaire() : Map<String, List<String>>
+}
+
+class IndexTri implements Index {
+    -noms : List<String>
+    +indexer(noms : List<String>) : void
+    +getNoms() : List<String>
+    +rechercherParMotCle(motCle : String) : List<String>
+    +rechercherParPrefixe(prefixe : String) : List<String>
+}
+
+class IndexArbre implements Index {
+    +indexer(noms : List<String>) : void
+    +getNoms() : List<String>
+    +rechercherParMotCle(motCle : String) : List<String>
+    +rechercherParPrefixe(prefixe : String) : List<String>
+    +ajouterNom(nom : String) : void
+    +collecterMotsNoeud(noeud : Noeud, resultats : List<String>) : void
+}
+
+' ============================================================
+'  SELECTION
+' ============================================================
+
+interface Selectionneur {
+    +selectionner(nom : Nom, candidats : List<Couple>, max : int) : List<Couple>
+}
+
+class SelectionneurTopN implements Selectionneur {
+    +selectionner(nom : Nom, candidats : List<Couple>, n : int) : List<Couple>
+}
+
+class SelectionneurTous implements Selectionneur {
+    +selectionner(nom : Nom, candidats : List<Couple>, max : int) : List<Couple>
+}
+
+class SelectionneurTopPourcentage implements Selectionneur {
+    -pourcentage : int
+    +SelectionneurTopPourcentage(pourcentage : int)
+    +selectionner(nom : Nom, candidats : List<Couple>, max : int) : List<Couple>
+}
+
+' ============================================================
+'  CONFIGURATION
+' ============================================================
+
+class Configuration {
+    -pretraitement : Pretraiteur
+    -indexeur : Index
+    -comparateur : ComparateurDeNom
+    -generateur : GenerateurDeCandidat
+    -selectionneur : Selectionneur
+    -seuil : double
+    -maxResultats : int
+    +getPretraiteur() : Pretraiteur
+    +getIndexeur() : Index
+    +getComparateur() : ComparateurDeNom
+    +getGenerateur() : GenerateurDeCandidat
+    +getSelectionneur() : Selectionneur
+    +getSeuil() : double
+    +getMaxResultats() : int
+    +setters()
+    +{static} choisirGenerateur(type : String) : GenerateurDeCandidat
+    +{static} choisirIndex(type : String) : Index
+    +{static} choisirComparateur(type : String) : ComparateurDeNom
+    +{static} choisirSelectionneur(type : String, param : int) : Selectionneur
+}
+
+Configuration o--> Pretraiteur       : agrégation
+Configuration o--> Index             : agrégation
+Configuration o--> ComparateurDeNom  : agrégation
+Configuration o--> GenerateurDeCandidat : agrégation
+Configuration o--> Selectionneur     : agrégation
+
+' ============================================================
+'  MOTEUR DE RECHERCHE
+' ============================================================
+
+class MoteurDeRecherche {
+    -config : Configuration
+    -selectionneur : Selectionneur
+    -livreur : LivreurDeResultat
+    +MoteurDeRecherche(config : Configuration, selectionneur : Selectionneur, fichierCSV : String)
+    +chercher(nom : Nom, database : List<Nom>) : List<Nom>
+    +chercherListe(requetes : List<Nom>, database : List<Nom>) : Map<Nom, List<Nom>>
+}
+
+class LivreurDeResultat {
+    -fichierCSV : String
+    -fw : FileWriter
+    +LivreurDeResultat()
+    +LivreurDeResultat(fichierCSV : String)
+    +livrer(requete : Nom, groupe : Groupe) : List<Nom>
+    +fermer() : void
+}
+
+class LecteurListeCSV {
+    -cheminFichier : String
+    -separateur : char
+    +LecteurListeCSV(cheminFichier : String)
+    +lire() : List<Nom>
+}
+
+MoteurDeRecherche --> Configuration
+MoteurDeRecherche --> LivreurDeResultat
+LivreurDeResultat --> Groupe : utilise
+
+@enduml
