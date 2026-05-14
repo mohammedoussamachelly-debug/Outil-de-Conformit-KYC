@@ -1,68 +1,34 @@
+package kyc.Configuration;
+
+import java.util.List;
+
 public class Configuration {
-  
-    private Pretraitement pretraitement;
-    private Index indexeur;
-    private ComparateurDeChaine comparateur;
-    private GenerateurDeCandidat generateur;
-    private Sectionneur sectionneur; 
-    private double seuil;
-    private int N;
-    private int maxResultats; 
 
+    private List<String> pretraiteurs;
+    private String       index;
+    private String       comparateur;
+    private String       generateur;
+    private String       selectionneur;
+    private int          paramSelection;
+    private double       seuil;
 
-    public Configuration(Pretraitement pretraitement, Index indexeur, ComparateurDeChaine comparateur, GenerateurDeCandidat generateur, Sectionneur sectionneur, double seuil, int maxResultats) {
-        this.pretraitement = pretraitement;
-        this.indexeur = indexeur;
-        this.comparateur = comparateur;
-        this.generateur = generateur;
-        this.sectionneur = sectionneur;
-        this.seuil = seuil;
-        
-        this.maxResultats = maxResultats;
-    
-    }
-    public Configuration() {
-      this(new PretraitementNormalisation(),new IndexArbre(),new ComparateurLevenshtein(),new GenerateurPrefixe(),
-         new SectionneurTopScore(),0.8,10);
+    public Configuration(List<String> pretraiteurs, String index, String comparateur,
+                         String generateur, String selectionneur,
+                         int paramSelection, double seuil) {
+        this.pretraiteurs   = pretraiteurs;
+        this.index          = index;
+        this.comparateur    = comparateur;
+        this.generateur     = generateur;
+        this.selectionneur  = selectionneur;
+        this.paramSelection = paramSelection;
+        this.seuil          = seuil;
     }
 
-    public Pretraitement getPretraitement() { 
-        return pretraitement; }
-    public Index getIndexeur() { 
-        return indexeur; }
-    public ComparateurDeChaine getComparateur(){ 
-        return comparateur; }
-    public GenerateurDeCandidat getGenerateur() {  
-        return generateur; }
-    public Sectionneur getSectionneur() {
-        return sectionneur; }
-    public double getSeuil(){ 
-        return seuil; }
-    
-    public int getMaxResultats(){ 
-        return maxResultats; }
-
-
-     public void setPretraitement(Pretraitement p){ 
-        this.pretraitement = p; }
-    public void setIndexeur(Index i){ 
-        this.indexeur = i; }
-    public void setComparateur(ComparateurDeChaine c){
-         this.comparateur = c; }
-    public void setGenerateur(GenerateurDeCandidat g){
-         this.generateur = g; }
-    public void setSectionneur(Sectionneur s){
-         this.sectionneur = s; }
-    public void setSeuil(double s){ 
-        this.seuil = s; }
-    public void setN(int n){
-        this.N = n;
-        this.maxResultats = n;
-    }
-    public void setMaxResultats(int m){ 
-        this.maxResultats = m;
-        
-    }
-
-
+    public List<String> getPretraiteurs()   { return pretraiteurs; }
+    public String       getIndex()          { return index; }
+    public String       getComparateur()    { return comparateur; }
+    public String       getGenerateur()     { return generateur; }
+    public String       getSelectionneur()  { return selectionneur; }
+    public int          getParamSelection() { return paramSelection; }
+    public double       getSeuil()          { return seuil; }
 }
