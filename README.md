@@ -4,6 +4,6 @@ Know Your Customer — Name Verification Tool
 
 ## Authors
 
-- Prénom Nom 1
-- Prénom Nom 2
-- Prénom Nom 3
+- Mohamed Ousssama Chelly
+- Ghassen ben yakhlef
+- Raslene amdouni
