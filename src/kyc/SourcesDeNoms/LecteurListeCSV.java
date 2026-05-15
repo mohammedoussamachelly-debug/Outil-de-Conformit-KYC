@@ -22,21 +22,22 @@ public class LecteurListeCSV {
         this(cheminFichier, ',');
     }
 
-    // CSV format: id,nom,source
+    // CSV format: id,nom[,source]  — id may be a non-numeric string
     public List<Nom> lire() throws IOException {
         List<Nom> noms = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier))) {
             String ligne;
             br.readLine(); // skip header
+            int compteur = 0;
             while ((ligne = br.readLine()) != null) {
                 ligne = ligne.trim();
                 if (ligne.isEmpty()) continue;
                 String[] colonnes = ligne.split(String.valueOf(separateur));
                 if (colonnes.length < 2) continue;
-                int id       = Integer.parseInt(colonnes[0].trim());
-                String nom   = colonnes[1].trim();
-                String source = colonnes.length >= 3 ? colonnes[2].trim() : "CSV";
-                noms.add(new Nom(id, nom, source));
+                String idOriginal = colonnes[0].trim();
+                String nom        = colonnes[1].trim();
+                String source     = colonnes.length >= 3 ? colonnes[2].trim() : "CSV";
+                noms.add(new Nom(compteur++, idOriginal, nom, source));
             }
         }
         return noms;

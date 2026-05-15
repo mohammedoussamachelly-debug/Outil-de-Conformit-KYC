@@ -4,7 +4,7 @@ import kyc.MoteurDeRecherche.MoteurDeRecherche;
 import kyc.comparateur.*;
 import kyc.GenerateurDeCandidats.*;
 import kyc.affichage.LivreurDeResultat;
-import kyc.indexation.IndexTri;
+import kyc.indexation.*;
 import kyc.model.Nom;
 import kyc.pretraitement.*;
 import kyc.selection.*;
@@ -96,18 +96,27 @@ public class Main {
         if (nomStr.isEmpty()) return;
         Nom requete = new Nom(nomStr);
 
-        // Comparateur
-        int choixComp = menu("Algorithme de comparaison",
-                "Levenshtein  (distance d'édition)",
-                "Jaro-Winkler (similarité phonétique)",
-                "Egalité exacte");
-        ComparateurDeChaine chaine;
-        switch (choixComp) {
-            case 2: chaine = new ComparateurJaroWinkler(); break;
-            case 3: chaine = new ComparateurEgalitExact();  break;
-            default: chaine = new ComparateurLevenshtein(); break;
+        // Comparateur de nom
+        int choixTypeComp = menu("Type de comparateur de noms",
+                "Par champ  (compare chaque mot séparément)",
+                "Global     (moyenne Levenshtein + Jaro-Winkler sur le nom entier)");
+
+        ComparateurDeNom comparateur;
+        if (choixTypeComp == 2) {
+            comparateur = new ComparateurDeNomGlobal();
+        } else {
+            int choixComp = menu("Algorithme de comparaison (par champ)",
+                    "Levenshtein  (distance d'édition)",
+                    "Jaro-Winkler (similarité phonétique)",
+                    "Egalité exacte");
+            ComparateurDeChaine chaine;
+            switch (choixComp) {
+                case 2: chaine = new ComparateurJaroWinkler(); break;
+                case 3: chaine = new ComparateurEgalitExact();  break;
+                default: chaine = new ComparateurLevenshtein(); break;
+            }
+            comparateur = new ComparateurDeNomParChamp(chaine);
         }
-        ComparateurDeNom comparateur = new ComparateurDeNomParChamp(chaine);
 
         // Seuil
         double seuil = 0.7;
@@ -136,25 +145,64 @@ public class Main {
                 break;
         }
 
-        // Générateur
+        // Générateur de candidats
         int choixGen = menu("Générateur de candidats",
-                "Linéaire   (compare avec toute la liste)",
-                "Phonétique (filtre par Soundex d'abord)");
-        String typeGen = choixGen == 2 ? "Phonetique" : "Linear";
+                "Linéaire         (compare toute la liste)",
+                "Phonétique       (filtre par Soundex)",
+                "Préfixe          (filtre par préfixe commun)",
+                "Longueur égale   (filtre par longueur similaire)",
+                "Lettres communes (filtre par lettres partagées)");
+        GenerateurDeCandidat generateur;
+        switch (choixGen) {
+            case 2:
+                generateur = new GenerateurPhonetique();
+                break;
+            case 3:
+                int tailleP = 3;
+                try { tailleP = Integer.parseInt(lire("Taille du préfixe", "3")); } catch (Exception ignored) {}
+                generateur = new GenerateurPrefixe(tailleP);
+                break;
+            case 4:
+                int tolerance = 2;
+                try { tolerance = Integer.parseInt(lire("Tolérance de longueur", "2")); } catch (Exception ignored) {}
+                generateur = new GenerateurLongueurEgale(tolerance);
+                break;
+            case 5:
+                generateur = new GenerateurLettresCommunes();
+                break;
+            default:
+                generateur = new LinearGenerator();
+                break;
+        }
+
+        // Index
+        int choixIndex = menu("Structure d'indexation",
+                "Tri     (liste triée)",
+                "Arbre   (arbre de préfixes / trie)",
+                "Dictionnaire (index par première lettre)");
+        Index index;
+        switch (choixIndex) {
+            case 2: index = new IndexArbre(); break;
+            case 3: index = new IndexDictionnaire(); break;
+            default: index = new IndexTri(); break;
+        }
 
         // Prétraitement
         int choixPre = menu("Prétraitement",
-                "Convertir en minuscules",
-                "Supprimer les accents");
-        Pretraiteur pretraiteur = choixPre == 2 ? new SupprimerAccents() : new ConvertirMinuscule();
+                "Minuscules uniquement",
+                "Supprimer les accents uniquement",
+                "Minuscules + supprimer les accents");
+        List<Pretraiteur> pretraiteurs;
+        switch (choixPre) {
+            case 2: pretraiteurs = Arrays.asList(new SupprimerAccents()); break;
+            case 3: pretraiteurs = Arrays.asList(new ConvertirMinuscule(), new SupprimerAccents()); break;
+            default: pretraiteurs = Arrays.asList(new ConvertirMinuscule()); break;
+        }
 
         // Lancement
-        GenerateurDeCandidat generateur = typeGen.equals("Phonetique")
-                ? new GenerateurPhonetique()
-                : new LinearGenerator();
         MoteurDeRecherche moteur = new MoteurDeRecherche(
-                Arrays.asList(pretraiteur), comparateur, generateur,
-                selectionneur, new LivreurDeResultat(), new IndexTri(), seuil);
+                pretraiteurs, comparateur, generateur,
+                selectionneur, new LivreurDeResultat(), index, seuil);
 
         System.out.println();
         moteur.chercher(requete, database);
